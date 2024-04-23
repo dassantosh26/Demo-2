@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
 
-
 const Navbar = () => {
   return (
     <nav className="navbar navbar-expand-sm navbar-dark bg-dark sticky-top mb-5">
@@ -30,13 +29,13 @@ const Navbar = () => {
               </Link>
             </li>
             <li className="nav-item me-4">
-              <Link className="nav-link active" to={"/"}>
+              <Link className="nav-link active" to={"/cart"}>
                 <i className="fa fa-shopping-cart"></i> My Cart
               </Link>
             </li>
             <li className="nav-item me-4">
               <Link className="nav-link active" to={"/"}>
-                <i className="fa fa-lock"></i>  Login
+                <i className="fa fa-lock"></i> Login
               </Link>
             </li>
           </ul>

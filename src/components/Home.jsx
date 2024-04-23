@@ -31,6 +31,29 @@ const Home = () => {
         setProductList(itemList);
       });
   };
+  const addCart = (id, price) => {
+    // alert(id.price)
+    {
+      const url = " https://cybotrix.com/webapi/cart/addtocart";
+      const addProduct = {
+        productid: id,
+        orderid: "7008525309",
+        qty: "1",
+        price: price,
+      };
+      let postData = {
+        headers: { "content-type": "application/json" },
+        method: "post",
+        body: JSON.stringify(addProduct),
+      };
+      fetch(url, postData)
+        .then((response) => response.text())
+        .then((msg) => {
+          alert(msg);
+        });
+    }
+  };
+
   useEffect(() => {
     getBrand();
     getCategoryList();
@@ -94,14 +117,14 @@ const Home = () => {
             </div>
           </div>
         </div>
-        <div className="col-lg-9 product">
+        <div className="col-lg-9 product mb-3">
           <div className="row">
             {productList
               .slice(offset, offset + PER_PAGE)
               .map((product, index) => {
                 return (
                   <div className="col-lg-3" key={index}>
-                    <div className="card">
+                    <div className="card mb-4">
                       <img
                         src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0lOAbGwrTH9HV2C9md0fn379g-KY4avQ_Jubs6IkBQg&s"
                         className="card-img-top"
@@ -109,7 +132,9 @@ const Home = () => {
                       />
                       <div className="card-body">
                         <h5 className="card-title">{product.productname}</h5>
-                        <p className="card-text">{product.details}</p>
+                        <p className="card-text text-truncate">
+                          {product.details}
+                        </p>
                         <p>
                           <span className="fw-bold">Price : ₹ </span>
                           {product.price}
@@ -118,11 +143,18 @@ const Home = () => {
                           <button
                             className=" rounded-3 px-2 text-white btn-hover"
                             style={{ backgroundColor: "#866528" }}
+                            onClick={addCart.bind(
+                              this,
+                              product.productid,
+                              product.price
+                            )}
                           >
                             <i className="fa fa-bag-shopping mx-2"></i>
                             Add to Cart
                           </button>
-                          <i className="fa-regular fa-heart fa-xl "></i>
+                          <button className="btn btn-warning rounded-3 ">
+                            <i className="fa fa-heart fs-6  text-light "></i>
+                          </button>
                         </div>
                       </div>
                     </div>
