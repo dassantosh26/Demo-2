@@ -50,7 +50,7 @@ const Home = () => {
         .then((response) => response.text())
         .then((msg) => {
           alert(msg);
-        });
+        }); 
     }
   };
 

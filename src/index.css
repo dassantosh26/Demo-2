@@ -10,3 +10,7 @@
   background-color: black;
   color: white; /* Change the text color to white for better visibility */
 }
+
+.del-icon{
+  cursor: pointer;
+}
