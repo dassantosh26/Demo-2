@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
   const [cartItem, setCartItem] = useState([]);
   // const [qty, setQty] = useState("");
+  const navigate = useNavigate();
 
   const getCartItem = () => {
     const url = " https://cybotrix.com/webapi/cart/getcartitem";
@@ -30,12 +32,12 @@ const Cart = () => {
   };
   // console.log(totalPrice());
 
-  const deleteProduct = (id, pId, qty) => {
+  const deleteProduct = (product) => {
     const url = "https://cybotrix.com/webapi/cart/removeCartItem";
     const addProduct = {
-      productid: pId,
-      id: id,
-      qty: qty,
+      productid: product.orderid,
+      id:product.id,
+      qty: product.quantity,
     };
     let postData = {
       headers: { "content-type": "application/json" },
@@ -50,15 +52,44 @@ const Cart = () => {
       });
   };
 
-  const updateQty = (product, action) => {
-    // console.log(product);
-    if (action === "add") {
-      product["quantity"] = Number(product.quantity) + 1;
+  const updateCart = (product, action) => {
+    const url = " https://cybotrix.com/webapi/cart/addtocart";
+    const addQty =
+      action === "add"
+        ? {
+            productid: product.productid,
+            orderid: "7008525309",
+            qty: 1,
+            price: product.priceperunit,
+          }
+        : product.quantity <= 1
+        ? deleteProduct(product.id, product.productid, product.quantity)
+        : {
+            productid: product.productid,
+            orderid: "7008525309",
+            qty: -1,
+            price: product.priceperunit,
+          };
+
+    let postData = {
+      headers: { "content-type": "application/json" },
+      method: "post",
+      body: JSON.stringify(addQty),
+    };
+
+    fetch(url, postData)
+      .then((response) => response.text())
+      .then((msg) => {
+        alert(msg);
+        getCartItem();
+      });
+  };
+
+  const loginAuth = () => {
+    if (localStorage.getItem("tokenno")) {
+      navigate("/checkout");
     } else {
-      product["quantity"] = Number(product.quantity) - 1;
-    }
-    if (product.quantity === 0) {
-      deleteProduct(product.productidid);
+      navigate("/login");
     }
   };
   useEffect(() => {
@@ -112,7 +143,7 @@ const Cart = () => {
                         <button
                           type="button"
                           className="btn btn-warning"
-                          onClick={updateQty.bind(this, product, "sub")}
+                          onClick={updateCart.bind(this, product, "sub")}
                         >
                           -
                         </button>
@@ -124,7 +155,7 @@ const Cart = () => {
                         <button
                           type="button"
                           className="btn btn-success"
-                          onClick={updateQty.bind(this, product, "add")}
+                          onClick={updateCart.bind(this, product, "add")}
                         >
                           +
                         </button>
@@ -133,12 +164,7 @@ const Cart = () => {
                     <div className="col-lg-1">
                       <i
                         className="fa fa-circle-xmark fa-2x delete-btn mt-3 del-icon"
-                        onClick={() =>
-                          deleteProduct(
-                            product.id,
-                            product.productid,
-                            product.quantity
-                          )
+                        onClick={deleteProduct.bind(this, product)
                         }
                       ></i>
                     </div>
@@ -161,7 +187,10 @@ const Cart = () => {
                   <span>Total Amount</span>
                   <span>₹ {totalPrice()}</span>
                 </div>
-                <button className="btn btn-secondary w-100 ">
+                <button
+                  className="btn btn-secondary w-100 "
+                  onClick={loginAuth}
+                >
                   Place Order
                 </button>
               </div>

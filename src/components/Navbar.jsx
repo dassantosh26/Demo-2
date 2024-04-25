@@ -1,7 +1,9 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+
 const Navbar = () => {
   const [cartItem, setCartItem] = useState([]);
+  const navigate = useNavigate();
 
   const getCartItem = () => {
     const url = " https://cybotrix.com/webapi/cart/getcartitem";
@@ -20,7 +22,10 @@ const Navbar = () => {
         setCartItem(msg);
       });
   };
-
+  const logout = () => {
+    localStorage.clear();
+    navigate("/");
+  };
   useEffect(() => {
     getCartItem();
   }, [cartItem]);
@@ -58,9 +63,22 @@ const Navbar = () => {
               </Link>
             </li>
             <li className="nav-item me-4">
-              <Link className="nav-link active" to={"/login"}>
-                <i className="fa fa-lock"></i> Login
-              </Link>
+              {localStorage.getItem("tokenno") ? (
+                <Link className="nav-link active" to={"/login"}>
+                  <i className="fa fa-user"></i> {localStorage.getItem("name")}
+                </Link>
+              ) : (
+                <Link className="nav-link active" to={"/login"}>
+                  <i className="fa fa-lock"></i> Login
+                </Link>
+              )}
+            </li>
+            <li className="nav-item me-4">
+              {localStorage.getItem("status") === "SUCCESS" ? (
+                <button className="nav-link active" onClick={logout}>
+                  <i className="fa fa-power-off"></i> Logout
+                </button>
+              ) : null}
             </li>
           </ul>
         </div>

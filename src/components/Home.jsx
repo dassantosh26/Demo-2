@@ -33,25 +33,24 @@ const Home = () => {
   };
   const addCart = (id, price) => {
     // alert(id.price)
-    {
-      const url = " https://cybotrix.com/webapi/cart/addtocart";
-      const addProduct = {
-        productid: id,
-        orderid: "7008525309",
-        qty: "1",
-        price: price,
-      };
-      let postData = {
-        headers: { "content-type": "application/json" },
-        method: "post",
-        body: JSON.stringify(addProduct),
-      };
-      fetch(url, postData)
-        .then((response) => response.text())
-        .then((msg) => {
-          alert(msg);
-        }); 
-    }
+
+    const url = " https://cybotrix.com/webapi/cart/addtocart";
+    const addProduct = {
+      productid: id,
+      orderid: "7008525309",
+      qty: "1",
+      price: price,
+    };
+    let postData = {
+      headers: { "content-type": "application/json" },
+      method: "post",
+      body: JSON.stringify(addProduct),
+    };
+    fetch(url, postData)
+      .then((response) => response.text())
+      .then((msg) => {
+        alert(msg);
+      });
   };
 
   useEffect(() => {
