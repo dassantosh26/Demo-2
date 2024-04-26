@@ -11,6 +11,16 @@
   color: white; /* Change the text color to white for better visibility */
 }
 
-.del-icon{
+.del-icon {
+  cursor: pointer;
+}
+.activediv {
+  border: 1px solid black;
+  cursor: pointer;
+  box-shadow:5px 5px 5px black ;
+}
+
+.inactivediv {
+  border: 1px solid gray;
   cursor: pointer;
 }

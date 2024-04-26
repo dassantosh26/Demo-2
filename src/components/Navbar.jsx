@@ -58,13 +58,13 @@ const Navbar = () => {
             </li>
             <li className="nav-item me-4">
               <Link className="nav-link active" to={"/cart"}>
-                <i className="fa fa-shopping-cart"></i> My Cart{" "}
-                {cartItem.length}
+                <i className="fa fa-shopping-cart"></i> My Cart
+                {cartItem.length === 0 ? "" : cartItem.length}
               </Link>
             </li>
             <li className="nav-item me-4">
               {localStorage.getItem("tokenno") ? (
-                <Link className="nav-link active" to={"/login"}>
+                <Link className="nav-link active" to={"/cart"}>
                   <i className="fa fa-user"></i> {localStorage.getItem("name")}
                 </Link>
               ) : (

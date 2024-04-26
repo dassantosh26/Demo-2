@@ -1,9 +1,15 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Modal } from "react-bootstrap";
+import Button from "react-bootstrap/Button";
+import EmptyCart from "./EmptyCart";
 
 const Cart = () => {
   const [cartItem, setCartItem] = useState([]);
-  // const [qty, setQty] = useState("");
+  const [show, setShow] = useState(false);
+  const [mode, setMode] = useState("");
+
+  // console.log(mode);
   const navigate = useNavigate();
 
   const getCartItem = () => {
@@ -36,7 +42,7 @@ const Cart = () => {
     const url = "https://cybotrix.com/webapi/cart/removeCartItem";
     const addProduct = {
       productid: product.orderid,
-      id:product.id,
+      id: product.id,
       qty: product.quantity,
     };
     let postData = {
@@ -53,50 +59,68 @@ const Cart = () => {
   };
 
   const updateCart = (product, action) => {
-    const url = " https://cybotrix.com/webapi/cart/addtocart";
-    const addQty =
-      action === "add"
-        ? {
-            productid: product.productid,
-            orderid: "7008525309",
-            qty: 1,
-            price: product.priceperunit,
-          }
-        : product.quantity <= 1
-        ? deleteProduct(product.id, product.productid, product.quantity)
-        : {
-            productid: product.productid,
-            orderid: "7008525309",
-            qty: -1,
-            price: product.priceperunit,
-          };
-
-    let postData = {
-      headers: { "content-type": "application/json" },
-      method: "post",
-      body: JSON.stringify(addQty),
-    };
-
-    fetch(url, postData)
-      .then((response) => response.text())
-      .then((msg) => {
-        alert(msg);
-        getCartItem();
-      });
+    let qty = 0;
+    if (action == "add") qty = 1;
+    else if (action == "sub") qty = -1;
+    if (product.quantity == 1 && action == "sub") deleteProduct(product);
+    else {
+      let url = "https://cybotrix.com/webapi/cart/addtocart";
+      let cartproduct = {
+        productid: product.productid,
+        orderid: product.orderid,
+        qty: qty,
+        price: product.priceperunit,
+      };
+      let postdata = {
+        headers: { "Content-Type": "application/json" },
+        method: "post",
+        body: JSON.stringify(cartproduct),
+      };
+      fetch(url, postdata)
+        .then((response) => response.text())
+        .then((msg) => {
+          alert(msg);
+          getCartItem();
+        });
+    }
   };
 
-  const loginAuth = () => {
+  const placeOrder = (action) => {
     if (localStorage.getItem("tokenno")) {
-      navigate("/checkout");
+      // navigate("/checkout");
+      action === "open" ? setShow(true) : setShow(false);
     } else {
       navigate("/login");
     }
+  };
+  const payNow = () => {
+    const url = "https://cybotrix.com/webapi/cart/paynow";
+    const orderData = {
+      mode: mode,
+      orderid: "7008525309",
+      userid: localStorage.getItem("tokenno"),
+      total: totalPrice(),
+    };
+    const postData = {
+      headers: { "content-type": "application/json" },
+      method: "post",
+      body: JSON.stringify(orderData),
+    };
+    fetch(url, postData)
+      .then((response) => response.text())
+      .then((msg) => {
+        console.log(msg);
+        // console.log(mode);
+        setShow(false);
+      });
   };
   useEffect(() => {
     getCartItem();
   }, []);
 
-  return (
+  return cartItem.length === 0 ? (
+    <EmptyCart />
+  ) : (
     <div className="container mt-5">
       <div className="row">
         <div className="col-lg-12 mb-4">
@@ -164,8 +188,7 @@ const Cart = () => {
                     <div className="col-lg-1">
                       <i
                         className="fa fa-circle-xmark fa-2x delete-btn mt-3 del-icon"
-                        onClick={deleteProduct.bind(this, product)
-                        }
+                        onClick={deleteProduct.bind(this, product)}
                       ></i>
                     </div>
                   </div>
@@ -189,7 +212,7 @@ const Cart = () => {
                 </div>
                 <button
                   className="btn btn-secondary w-100 "
-                  onClick={loginAuth}
+                  onClick={() => placeOrder("open")}
                 >
                   Place Order
                 </button>
@@ -199,6 +222,97 @@ const Cart = () => {
           <div className="col-lg-2"></div>
         </div>
       </div>
+      <Modal show={show}>
+        <Modal.Header>
+          <Modal.Title>Payment Method</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="container">
+            <div className="row">
+              <p className="fs-6">
+                Total amount to be paid : ₹
+                <span className="fs-4 ms-1">{totalPrice()}</span>
+              </p>
+              <p className="fs-5 fw-semibold">Choose Payment Methods : </p>
+              <div className="col-lg-12 d-flex justify-content-between">
+                <div
+                  className={`p-2 m-2 ${
+                    mode === "netBanking" ? "activediv" : "inactivediv"
+                  } `}
+                >
+                  <img
+                    src="https://cdn-icons-png.flaticon.com/128/4488/4488426.png"
+                    alt="paymentIcon"
+                    width={50}
+                    onClick={() => setMode("netBanking")}
+                  />
+                  <p>Net Banking</p>
+                </div>
+                <div
+                  className={`p-2 m-2 ${
+                    mode === "upi" ? "activediv" : "inactivediv"
+                  } `}
+                >
+                  <img
+                    src="https://cdn-icons-png.flaticon.com/128/3186/3186923.png"
+                    alt="paymentIcon"
+                    width={50}
+                    onClick={() => setMode("upi")}
+                  />
+                  <p>Upi</p>
+                </div>
+                <div
+                  className={`p-2 m-2 ${
+                    mode === "debit" ? "activediv" : "inactivediv"
+                  } `}
+                >
+                  <img
+                    src="https://cdn-icons-png.flaticon.com/128/9334/9334540.png"
+                    alt="paymentIcon"
+                    width={50}
+                    onClick={() => setMode("debit")}
+                  />
+                  <p>Debit Card</p>
+                </div>
+                <div
+                  className={`p-2 m-2 ${
+                    mode === "credit" ? "activediv" : "inactivediv"
+                  }`}
+                >
+                  <img
+                    src="https://cdn-icons-png.flaticon.com/128/10473/10473692.png"
+                    alt="paymentIcon"
+                    width={50}
+                    onClick={() => setMode("credit")}
+                  />
+                  <p>Credit Card</p>
+                </div>
+                <div
+                  className={`p-2 m-2 ${
+                    mode === "cod" ? "activediv" : "inactivediv"
+                  }`}
+                >
+                  <img
+                    src="https://cdn-icons-png.flaticon.com/128/5359/5359689.png"
+                    alt="paymentIcon"
+                    width={50}
+                    onClick={() => setMode("cod")}
+                  />
+                  <p>Cash on delivery</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => placeOrder("close")}>
+            Close
+          </Button>
+          <Button variant="primary" onClick={payNow}>
+            Pay Now
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };
