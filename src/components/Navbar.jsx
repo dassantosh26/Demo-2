@@ -8,7 +8,7 @@ const Navbar = () => {
   const getCartItem = () => {
     const url = " https://cybotrix.com/webapi/cart/getcartitem";
     const addProduct = {
-      orderid: "7008525309",
+      orderid: localStorage.getItem("orderid"),
     };
     let postData = {
       headers: { "content-type": "application/json" },
@@ -28,7 +28,7 @@ const Navbar = () => {
   };
   useEffect(() => {
     getCartItem();
-  }, [cartItem]);
+  }, []);
   return (
     <nav className="navbar navbar-expand-sm navbar-dark bg-dark sticky-top mb-5">
       <div className="container">
@@ -62,6 +62,7 @@ const Navbar = () => {
                 {cartItem.length === 0 ? "" : cartItem.length}
               </Link>
             </li>
+
             <li className="nav-item me-4">
               {localStorage.getItem("tokenno") ? (
                 <Link className="nav-link active" to={"/cart"}>
@@ -73,13 +74,20 @@ const Navbar = () => {
                 </Link>
               )}
             </li>
-            <li className="nav-item me-4">
-              {localStorage.getItem("status") === "SUCCESS" ? (
-                <button className="nav-link active" onClick={logout}>
-                  <i className="fa fa-power-off"></i> Logout
-                </button>
-              ) : null}
-            </li>
+            {localStorage.getItem("status") === "SUCCESS" ? (
+              <>
+                <li className="nav-item me-4">
+                  <Link className="nav-link active" to={"/orderlist"}>
+                    <i className="fa fa-home"></i> My Order
+                  </Link>
+                </li>
+                <li className="nav-item me-4">
+                  <button className="nav-link active" onClick={logout}>
+                    <i className="fa fa-power-off"></i> Logout
+                  </button>
+                </li>
+              </>
+            ) : null}
           </ul>
         </div>
       </div>

@@ -8,6 +8,9 @@ const Home = () => {
   const [productList, setProductList] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
 
+ 
+
+ 
   const getBrand = () => {
     fetch("https://cybotrix.com/webapi/brand/getall")
       .then((res) => res.json())
@@ -37,7 +40,7 @@ const Home = () => {
     const url = " https://cybotrix.com/webapi/cart/addtocart";
     const addProduct = {
       productid: id,
-      orderid: "7008525309",
+      orderid: localStorage.getItem("orderid"),
       qty: "1",
       price: price,
     };

@@ -9,13 +9,13 @@ const Cart = () => {
   const [show, setShow] = useState(false);
   const [mode, setMode] = useState("");
 
-  // console.log(mode);
+  
   const navigate = useNavigate();
 
   const getCartItem = () => {
     const url = " https://cybotrix.com/webapi/cart/getcartitem";
     const addProduct = {
-      orderid: "7008525309",
+      orderid: localStorage.getItem("orderid"),
     };
     let postData = {
       headers: { "content-type": "application/json" },
@@ -97,7 +97,7 @@ const Cart = () => {
     const url = "https://cybotrix.com/webapi/cart/paynow";
     const orderData = {
       mode: mode,
-      orderid: "7008525309",
+      orderid: localStorage.getItem("orderid"),
       userid: localStorage.getItem("tokenno"),
       total: totalPrice(),
     };
@@ -109,9 +109,11 @@ const Cart = () => {
     fetch(url, postData)
       .then((response) => response.text())
       .then((msg) => {
-        console.log(msg);
+        alert(msg);
         // console.log(mode);
         setShow(false);
+        localStorage.removeItem("orderid");
+        window.location.reload();
       });
   };
   useEffect(() => {
