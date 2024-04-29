@@ -20,7 +20,7 @@ const OrdeList = () => {
 
   useEffect(() => {
     getOrderList().then((msg) => {
-      setOrderList(msg);
+      setOrderList(msg.reverse());
     });
   }, []);
 

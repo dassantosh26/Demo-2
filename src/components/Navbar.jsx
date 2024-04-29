@@ -5,8 +5,8 @@ const Navbar = () => {
   const [cartItem, setCartItem] = useState([]);
   const navigate = useNavigate();
 
-  const getCartItem = () => {
-    const url = " https://cybotrix.com/webapi/cart/getcartitem";
+  const getCartItem = async () => {
+    const url = "https://cybotrix.com/webapi/cart/getcartitem";
     const addProduct = {
       orderid: localStorage.getItem("orderid"),
     };
@@ -15,13 +15,15 @@ const Navbar = () => {
       method: "post",
       body: JSON.stringify(addProduct),
     };
-    fetch(url, postData)
-      .then((response) => response.json())
-      .then((msg) => {
-        // console.log(msg);
-        setCartItem(msg);
-      });
+    try {
+      const response = await fetch(url, postData);
+      const msg = await response.json();
+      setCartItem(msg);
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
+
   const logout = () => {
     localStorage.clear();
     navigate("/");

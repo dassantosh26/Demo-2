@@ -14,13 +14,38 @@
 .del-icon {
   cursor: pointer;
 }
+/* Payment option */
 .activediv {
   border: 1px solid black;
   cursor: pointer;
-  box-shadow:5px 5px 5px black ;
+  box-shadow: 5px 5px 5px black;
 }
 
 .inactivediv {
   border: 1px solid gray;
   cursor: pointer;
+}
+
+/* Shimmer */
+.shimmer-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.shimmer-card {
+  width: 222px;
+  height: 330px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+  margin: 20px;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -100% 0;
+  }
+  100% {
+    background-position: 100% 0;
+  }
 }

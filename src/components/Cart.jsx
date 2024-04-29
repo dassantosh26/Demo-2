@@ -3,17 +3,18 @@ import { useNavigate } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import EmptyCart from "./EmptyCart";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Cart = () => {
   const [cartItem, setCartItem] = useState([]);
   const [show, setShow] = useState(false);
   const [mode, setMode] = useState("");
 
-  
   const navigate = useNavigate();
 
-  const getCartItem = () => {
-    const url = " https://cybotrix.com/webapi/cart/getcartitem";
+  const getCartItem = async () => {
+    const url = "https://cybotrix.com/webapi/cart/getcartitem";
     const addProduct = {
       orderid: localStorage.getItem("orderid"),
     };
@@ -22,13 +23,15 @@ const Cart = () => {
       method: "post",
       body: JSON.stringify(addProduct),
     };
-    fetch(url, postData)
-      .then((response) => response.json())
-      .then((msg) => {
-        // console.log(msg);
-        setCartItem(msg);
-      });
+    try {
+      const response = await fetch(url, postData);
+      const msg = await response.json();
+      setCartItem(msg);
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
+
   const totalPrice = () => {
     let totalCost = 0;
     cartItem.map((item) => {
@@ -38,7 +41,7 @@ const Cart = () => {
   };
   // console.log(totalPrice());
 
-  const deleteProduct = (product) => {
+  const deleteProduct = async (product) => {
     const url = "https://cybotrix.com/webapi/cart/removeCartItem";
     const addProduct = {
       productid: product.orderid,
@@ -50,15 +53,21 @@ const Cart = () => {
       method: "post",
       body: JSON.stringify(addProduct),
     };
-    fetch(url, postData)
-      .then((response) => response.text())
-      .then((msg) => {
-        alert(msg);
-        getCartItem();
+    try {
+      const response = await fetch(url, postData);
+      const msg = await response.text();
+      toast.error(msg, {
+        autoClose: 1000, // Close after 1 seconds
       });
+      setTimeout(() => {
+        getCartItem();
+      }, 1000);
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
-  const updateCart = (product, action) => {
+  const updateCart = async (product, action) => {
     let qty = 0;
     if (action == "add") qty = 1;
     else if (action == "sub") qty = -1;
@@ -76,10 +85,12 @@ const Cart = () => {
         method: "post",
         body: JSON.stringify(cartproduct),
       };
-      fetch(url, postdata)
+      await fetch(url, postdata)
         .then((response) => response.text())
         .then((msg) => {
-          alert(msg);
+          toast.success(msg, {
+            autoClose: 1000, // Close after 3 seconds
+          });
           getCartItem();
         });
     }
@@ -93,7 +104,8 @@ const Cart = () => {
       navigate("/login");
     }
   };
-  const payNow = () => {
+
+  const payNow = async () => {
     const url = "https://cybotrix.com/webapi/cart/paynow";
     const orderData = {
       mode: mode,
@@ -106,16 +118,25 @@ const Cart = () => {
       method: "post",
       body: JSON.stringify(orderData),
     };
-    fetch(url, postData)
-      .then((response) => response.text())
-      .then((msg) => {
-        alert(msg);
-        // console.log(mode);
-        setShow(false);
-        localStorage.removeItem("orderid");
-        window.location.reload();
+    try {
+      const response = await fetch(url, postData);
+      const msg = await response.text();
+      setShow(false);
+      localStorage.removeItem("orderid");
+      // toast.success(msg);
+      toast.success(msg, {
+        autoClose: 2000, // Close after 3 seconds
       });
+      setTimeout(() => {
+        window.location.reload();
+      }, 3000);
+    } catch (err) {
+      console.log("Error", err);
+      // Display toast message if payment fails
+      toast.error("Payment failed. Please try again later.");
+    }
   };
+
   useEffect(() => {
     getCartItem();
   }, []);
@@ -131,6 +152,7 @@ const Cart = () => {
         <div className="row">
           <div className="col-lg-1"></div>
           <div className="col-lg-7">
+            <ToastContainer position="top-center" />
             <h4 className="text-center mb-3">Item Added</h4>
             <div>
               {cartItem.map((product, index) => {
@@ -230,6 +252,7 @@ const Cart = () => {
         </Modal.Header>
         <Modal.Body>
           <div className="container">
+            <ToastContainer position="top-right" />
             <div className="row">
               <p className="fs-6">
                 Total amount to be paid : ₹

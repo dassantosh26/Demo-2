@@ -5,7 +5,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassWord] = useState("");
   const navigate = useNavigate();
-  const loginCheck = () => {
+  const loginCheck = async () => {
     if (email === "" || password === "") {
       alert(`Please Enter Email or Password`);
     } else {
@@ -16,17 +16,20 @@ const Login = () => {
         method: "post",
         body: JSON.stringify(newBrand),
       };
-      fetch(url, postData)
-        .then((response) => response.json())
-        .then((userinfo) => {
-          console.log(userinfo);
-          localStorage.setItem("tokenno", userinfo.tokenno);
-          localStorage.setItem("name", userinfo.name);
-          localStorage.setItem("status", userinfo.status);
-        });
-      navigate("/cart");
+      try {
+        const response = await fetch(url, postData);
+        const userinfo = await response.json();
+        console.log(userinfo);
+        localStorage.setItem("tokenno", userinfo.tokenno);
+        localStorage.setItem("name", userinfo.name);
+        localStorage.setItem("status", userinfo.status);
+        navigate("/cart");
+      } catch (error) {
+        console.error("Error:", error);
+      }
     }
   };
+
   return (
     <div className="container">
       <div className="row">

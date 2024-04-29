@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import ReactPaginate from "react-paginate";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const Home = () => {
   const [keyword, setKeyword] = useState("");
   const [brandList, setBrandList] = useState([]);
@@ -8,52 +10,66 @@ const Home = () => {
   const [productList, setProductList] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
 
- 
+  const getBrand = async () => {
+    try {
+      const response = await fetch("https://cybotrix.com/webapi/brand/getall");
+      const itemList = await response.json();
+      setBrandList(itemList);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
 
- 
-  const getBrand = () => {
-    fetch("https://cybotrix.com/webapi/brand/getall")
-      .then((res) => res.json())
-      .then((itemList) => {
-        setBrandList(itemList);
-        // console.log(itemList);
-      });
+  const getCategoryList = async () => {
+    try {
+      const response = await fetch(
+        "https://cybotrix.com/webapi/category/getall"
+      );
+      const itemList = await response.json();
+      setCategoryList(itemList);
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
-  const getCategoryList = () => {
-    fetch("https://cybotrix.com/webapi/category/getall")
-      .then((res) => res.json())
-      .then((itemList) => {
-        setCategoryList(itemList);
-        // console.log(itemList);
-      });
-  };
-  const getproductList = () => {
-    fetch("https://cybotrix.com/webapi/product/getall")
-      .then((res) => res.json())
-      .then((itemList) => {
-        setProductList(itemList);
-      });
-  };
-  const addCart = (id, price) => {
-    // alert(id.price)
 
-    const url = " https://cybotrix.com/webapi/cart/addtocart";
-    const addProduct = {
-      productid: id,
-      orderid: localStorage.getItem("orderid"),
-      qty: "1",
-      price: price,
-    };
-    let postData = {
-      headers: { "content-type": "application/json" },
-      method: "post",
-      body: JSON.stringify(addProduct),
-    };
-    fetch(url, postData)
-      .then((response) => response.text())
-      .then((msg) => {
-        alert(msg);
+  const getproductList = async () => {
+    try {
+      const response = await fetch(
+        "https://cybotrix.com/webapi/product/getall"
+      );
+      const itemList = await response.json();
+      setProductList(itemList);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  const addCart = async (id, price) => {
+    try {
+      const url = "https://cybotrix.com/webapi/cart/addtocart";
+      const addProduct = {
+        productid: id,
+        orderid: localStorage.getItem("orderid"),
+        qty: "1",
+        price: price,
+      };
+      let postData = {
+        headers: { "content-type": "application/json" },
+        method: "post",
+        body: JSON.stringify(addProduct),
+      };
+
+      const response = await fetch(url, postData); // Corrected variable name
+      const productInfo = await response.text(); // Changed variable name for consistency
+      toast.success(productInfo, {
+        autoClose: 1000, // Close after 1 seconds
       });
+    } catch (error) {
+      console.error("Error adding product to cart:", error);
+      toast.error("Failed to add product to cart. Please try again.", {
+        autoClose: 2000,
+      });
+    }
   };
 
   useEffect(() => {
@@ -61,6 +77,7 @@ const Home = () => {
     getCategoryList();
     getproductList();
   }, []);
+
   //pagination
   const PER_PAGE = 8;
   function handlePageClick({ selected: selectedPage }) {
@@ -70,6 +87,7 @@ const Home = () => {
   const pageCount = Math.ceil(productList.length / PER_PAGE);
   return (
     <div className="container">
+      <ToastContainer position="top-right" />
       <div className="row mb-5">
         <div className="col-lg-4"></div>
         <div className="col-lg-4 ">
