@@ -38,9 +38,49 @@
   background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
   background-size: 200% 100%;
   animation: shimmer 2s infinite;
-  margin: 20px;
+  margin: 9px;
 }
-
+.shimmer-order-container {
+  display: flex;
+  flex-direction: column;
+}
+.shimmer-order-card {
+  width: 880px;
+  height: 132px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+  margin: 10px;
+}
+.shimmer-cart-container {
+  display: flex;
+  margin-left: 200px;
+  margin-top: 150px;
+}
+.shimmer-cart-card {
+  width: 735px;
+  height: 180px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+  margin: 10px;
+}
+.shimmer-cart-card1 {
+  width: 410px;
+  height: 275px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+  margin: 10px;
+}
+.shimmer-sidebar-container {
+  width: 200px;
+  height: 200px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+  
+}
 @keyframes shimmer {
   0% {
     background-position: -100% 0;

@@ -2,18 +2,21 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
-import EmptyCart from "./EmptyCart";
+import EmptyCart from "../shimmer/EmptyCart";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import CartShimmer from "../shimmer/CartShimmer";
 
 const Cart = () => {
   const [cartItem, setCartItem] = useState([]);
   const [show, setShow] = useState(false);
   const [mode, setMode] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
 
   const getCartItem = async () => {
+    setIsLoading(true);
     const url = "https://cybotrix.com/webapi/cart/getcartitem";
     const addProduct = {
       orderid: localStorage.getItem("orderid"),
@@ -27,6 +30,7 @@ const Cart = () => {
       const response = await fetch(url, postData);
       const msg = await response.json();
       setCartItem(msg);
+      setIsLoading(false);
     } catch (error) {
       console.error("Error:", error);
     }
@@ -141,7 +145,9 @@ const Cart = () => {
     getCartItem();
   }, []);
 
-  return cartItem.length === 0 ? (
+  return isLoading ? (
+    <CartShimmer />
+  ) : cartItem.length == 0 ? (
     <EmptyCart />
   ) : (
     <div className="container mt-5">
