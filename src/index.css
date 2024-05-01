@@ -89,3 +89,11 @@
     background-position: 100% 0;
   }
 }
+
+.footer1 {
+  text-decoration: none !important;
+  color: white !important;
+}
+.footer li{
+  list-style: none;
+}

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import ReactPaginate from "react-paginate";
@@ -12,6 +13,8 @@ const Home = () => {
   const [productList, setProductList] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [bId, setBid] = useState("");
+  const [cId, setcid] = useState("");
 
   const getBrand = async () => {
     setIsLoading(true);
@@ -68,8 +71,8 @@ const Home = () => {
         body: JSON.stringify(addProduct),
       };
 
-      const response = await fetch(url, postData); // Corrected variable name
-      const productInfo = await response.text(); // Changed variable name for consistency
+      const response = await fetch(url, postData);
+      const productInfo = await response.text();
       toast.success(productInfo, {
         autoClose: 1000, // Close after 1 seconds
       });
@@ -80,13 +83,43 @@ const Home = () => {
       });
     }
   };
+  const searchproductByCategory = async (categoryid = "", brandid = "") => {
+    setIsLoading(true);
+    const url = "https://cybotrix.com/webapi/product/searchproduct";
+    const newcat = { categoryid: cId, brandid: bId }; // pass productid
+    const postData = {
+      headers: { "content-type": "application/json" },
+      method: "post",
+      body: JSON.stringify(newcat),
+    };
+    await fetch(url, postData)
+      .then((response) => response.json())
+      .then((msg) => {
+        setProductList(msg);
+        setIsLoading(false);
+      });
+  };
+  // Calling this function when a category is clicked
+  const handleCategoryClick = (categoryid) => {
+    setBid("");
+    setcid(categoryid);
+  };
+
+  // Calling this function when a brand is clicked
+  const handleBrandClick = (brandid) => {
+    setcid("");
+    setBid(brandid);
+  };
 
   useEffect(() => {
     getBrand();
     getCategoryList();
     getproductList();
   }, []);
-
+  useEffect(() => {
+    searchproductByCategory();
+    console.log(cId, bId);
+  }, [cId, bId]);
   //pagination
   const PER_PAGE = 12;
   function handlePageClick({ selected: selectedPage }) {
@@ -116,7 +149,7 @@ const Home = () => {
             style={{ height: "250px", width: "250px" }}
           >
             <div className="mb-3 shadow-lg p-3 w-100 text-center fw-bold">
-              Shop By Category
+              Shop By Brand
             </div>
             <div className=" w-100 p-3" style={{ overflowY: "scroll" }}>
               {isLoading ? (
@@ -124,7 +157,11 @@ const Home = () => {
               ) : (
                 brandList.map((brand, index) => {
                   return (
-                    <Link key={index} className="text-decoration-none">
+                    <Link
+                      key={index}
+                      className="text-decoration-none"
+                      onClick={() => handleBrandClick(brand.brandid)}
+                    >
                       <p className="ms-3">{brand.brandname}</p>
                     </Link>
                   );
@@ -137,7 +174,7 @@ const Home = () => {
             style={{ height: "250px", width: "250px" }}
           >
             <div className="mb-3 shadow-lg p-3 w-100 text-center fw-bold">
-              Shop By Brand
+              Shop By Category
             </div>
             <div className=" w-100 p-3" style={{ overflowY: "scroll" }}>
               {isLoading ? (
@@ -145,7 +182,11 @@ const Home = () => {
               ) : (
                 categoryList.map((category, index) => {
                   return (
-                    <Link key={index} className="text-decoration-none ">
+                    <Link
+                      key={index}
+                      className="text-decoration-none "
+                      onClick={() => handleCategoryClick(category.catid)}
+                    >
                       <p className="ms-3">{category.categoryname}</p>
                     </Link>
                   );
@@ -160,6 +201,17 @@ const Home = () => {
               <ShimmerUi />
             ) : (
               productList
+
+                .filter(
+                  (product) =>
+                    product.productname
+                      ?.toLowerCase()
+                      .includes(keyword.toLowerCase()) ||
+                    product.details
+                      ?.toLowerCase()
+                      .includes(keyword.toLowerCase()) ||
+                    product.price?.toLowerCase().includes(keyword.toLowerCase())
+                )
                 .slice(offset, offset + PER_PAGE)
                 .map((product, index) => {
                   return (

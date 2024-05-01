@@ -28,8 +28,6 @@ const OrdeList = () => {
     });
   }, []);
 
- 
-
   return (
     <div className="container">
       <div className="row">

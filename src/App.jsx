@@ -4,6 +4,7 @@ import Home from "./components/Home";
 import Cart from "./components/Cart";
 import Login from "./components/Login";
 import OrdeList from "./components/OrdeList";
+// import Footer from "./components/Footer";
 
 function App() {
   if (localStorage.getItem("orderid") == null) {
@@ -20,6 +21,7 @@ function App() {
           <Route path="/orderlist" element={<OrdeList />} />
           <Route path="/login" element={<Login />} />
         </Routes>
+        {/* <Footer /> */}
       </HashRouter>
     </>
   );
