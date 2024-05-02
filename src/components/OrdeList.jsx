@@ -41,45 +41,56 @@ const OrdeList = () => {
           {isLoading ? (
             <OrderShimmer />
           ) : (
-            orderList.map((order) => {
-              return order.map((item, index) => {
-                return (
-                  <div
-                    className=" row mb-3 border border-black main-div"
-                    key={index}
-                  >
-                    <div className="col-lg-3">
-                      {
-                        <img
-                          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0lOAbGwrTH9HV2C9md0fn379g-KY4avQ_Jubs6IkBQg&s"
-                          className="card-img-top"
-                          alt="..."
-                        />
-                      }
-                    </div>
-                    <div className="col-lg-4 ">
-                      <p className="text-capitalize">
-                        <span className="fw-bold">Product Name : </span>
-                        {item.productname}
-                      </p>
-                      <p>
-                        <span className="fw-bold">Price</span> : ₹
-                        {item.priceperunit}
-                      </p>
-                      <p>
-                        <span className="fw-bold">Total Amount</span> : ₹
-                        {item.total}
-                      </p>
-                    </div>
-                    <div className="col-lg-4">
-                      <p className="mt-3 ">
-                        <span className="fw-bold">Order Id</span> :
-                        {item.orderid}
-                      </p>
-                    </div>
+            orderList.map((order, index) => {
+              return (
+                <div
+                  className="row border border-light shadow-lg p-2 mb-3 rounded"
+                  key={index}
+                >
+                  <div className="col-lg-1"></div>
+                  <div className="col-lg-10">
+                    <p className="fw-semibold">Order Id : {order[0].orderid}</p>
+                    {order.map((item, index) => {
+                      return (
+                        <div
+                          className=" row mb-2 p-2 border border-light-subtle shadow-sm main-div"
+                          key={index}
+                        >
+                          <div className="col-lg-3">
+                            {
+                              <img
+                                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0lOAbGwrTH9HV2C9md0fn379g-KY4avQ_Jubs6IkBQg&s"
+                                className="card-img-top"
+                                alt="..."
+                              />
+                            }
+                          </div>
+                          <div className="col-lg-4 ">
+                            <p className="text-capitalize">
+                              <span className="fw-bold">Product Name : </span>
+                              {item.productname}
+                            </p>
+                            <p>
+                              <span className="fw-bold">Price</span> : ₹
+                              {item.priceperunit}
+                            </p>
+                            <p>
+                              <span className="fw-bold">Total Amount</span> : ₹
+                              {item.total}
+                            </p>
+                          </div>
+                          <div className="col-lg-4">
+                            <p className="mt-3 ">
+                              <span className="fw-bold ">Quantity</span> :
+                              {item.quantity}
+                            </p>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
-                );
-              });
+                </div>
+              );
             })
           )}
         </div>

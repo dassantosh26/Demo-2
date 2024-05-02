@@ -120,13 +120,20 @@ const Home = () => {
     searchproductByCategory();
     console.log(cId, bId);
   }, [cId, bId]);
+
+  const filtereredProduct = productList.filter(
+    (product) =>
+      product.productname.toLowerCase().includes(keyword.toLowerCase()) ||
+      product.details.toLowerCase().includes(keyword.toLowerCase()) ||
+      product.price.toLowerCase().includes(keyword.toLowerCase())
+  );
   //pagination
   const PER_PAGE = 12;
   function handlePageClick({ selected: selectedPage }) {
     setCurrentPage(selectedPage);
   }
   const offset = currentPage * PER_PAGE;
-  const pageCount = Math.ceil(productList.length / PER_PAGE);
+  const pageCount = Math.ceil(filtereredProduct.length / PER_PAGE);
   return (
     <div className="container">
       <ToastContainer position="top-right" />
@@ -200,18 +207,7 @@ const Home = () => {
             {isLoading ? (
               <ShimmerUi />
             ) : (
-              productList
-
-                .filter(
-                  (product) =>
-                    product.productname
-                      ?.toLowerCase()
-                      .includes(keyword.toLowerCase()) ||
-                    product.details
-                      ?.toLowerCase()
-                      .includes(keyword.toLowerCase()) ||
-                    product.price?.toLowerCase().includes(keyword.toLowerCase())
-                )
+              filtereredProduct
                 .slice(offset, offset + PER_PAGE)
                 .map((product, index) => {
                   return (
