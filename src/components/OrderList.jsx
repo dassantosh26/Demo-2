@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import OrderShimmer from "../shimmer/OrderShimmer";
 
-const OrdeList = () => {
+const OrderList = () => {
   const [orderList, setOrderList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -27,6 +27,7 @@ const OrdeList = () => {
       setIsLoading(false);
     });
   }, []);
+  // console.log("orderlist---------------", orderList);
 
   return (
     <div className="container">
@@ -49,7 +50,9 @@ const OrdeList = () => {
                 >
                   <div className="col-lg-1"></div>
                   <div className="col-lg-10">
-                    <p className="fw-semibold">Order Id : {order[0].orderid}</p>
+                    <p className="fw-semibold">
+                      Order Id : {order[0] && order[0].orderid}
+                    </p>
                     {order.map((item, index) => {
                       return (
                         <div
@@ -100,4 +103,4 @@ const OrdeList = () => {
   );
 };
 
-export default OrdeList;
+export default OrderList;

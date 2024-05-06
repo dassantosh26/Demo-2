@@ -97,3 +97,20 @@
 .footer li{
   list-style: none;
 }
+.suggestion-box{
+  z-index: 11111;
+  max-height:150px;
+  background-color: #c0c0c0;
+  transition: 10s ease;
+  padding: 4px;
+  /* margin: 10px; */
+  overflow-y: scroll;
+  cursor: pointer;
+}
+
+.suggestion-box > div:hover{
+  background-color: rgb(75, 75, 75);
+  color: white;
+  
+  
+}

@@ -29,6 +29,7 @@ const Cart = () => {
     try {
       const response = await fetch(url, postData);
       const msg = await response.json();
+      console.log(msg);
       setCartItem(msg);
       setIsLoading(false);
     } catch (error) {
@@ -124,19 +125,17 @@ const Cart = () => {
     };
     try {
       const response = await fetch(url, postData);
-      const msg = await response.text();
+      const msg = response.text();
       setShow(false);
-      localStorage.removeItem("orderid");
-      // toast.success(msg);
       toast.success(msg, {
         autoClose: 2000, // Close after 3 seconds
       });
       setTimeout(() => {
+        localStorage.removeItem("orderid");
         window.location.reload();
       }, 3000);
     } catch (err) {
       console.log("Error", err);
-      // Display toast message if payment fails
       toast.error("Payment failed. Please try again later.");
     }
   };

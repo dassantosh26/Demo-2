@@ -1,36 +1,13 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
 
 const Navbar = () => {
-  const [cartItem, setCartItem] = useState([]);
   const navigate = useNavigate();
-
-  const getCartItem = async () => {
-    const url = "https://cybotrix.com/webapi/cart/getcartitem";
-    const addProduct = {
-      orderid: localStorage.getItem("orderid"),
-    };
-    let postData = {
-      headers: { "content-type": "application/json" },
-      method: "post",
-      body: JSON.stringify(addProduct),
-    };
-    try {
-      const response = await fetch(url, postData);
-      const msg = await response.json();
-      setCartItem(msg);
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
 
   const logout = () => {
     localStorage.clear();
     navigate("/");
   };
-  useEffect(() => {
-    getCartItem();
-  }, []);
+
   return (
     <nav className="navbar navbar-expand-sm navbar-dark bg-dark sticky-top mb-5">
       <div className="container">
@@ -61,7 +38,6 @@ const Navbar = () => {
             <li className="nav-item me-4">
               <Link className="nav-link active" to={"/cart"}>
                 <i className="fa fa-shopping-cart"></i> My Cart
-                {cartItem.length === 0 ? "" : cartItem.length}
               </Link>
             </li>
 

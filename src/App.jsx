@@ -3,8 +3,10 @@ import Navbar from "./components/Navbar";
 import Home from "./components/Home";
 import Cart from "./components/Cart";
 import Login from "./components/Login";
-import OrdeList from "./components/OrdeList";
 import Footer from "./components/Footer";
+import Search from "./components/Search";
+import ProductDetails from "./components/ProductDetails";
+import OrderList from "./components/OrderList";
 
 function App() {
   if (localStorage.getItem("orderid") == null) {
@@ -18,8 +20,10 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/cart" element={<Cart />} />
-          <Route path="/orderlist" element={<OrdeList />} />
+          <Route path="/orderlist" element={<OrderList />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/search/:purl" element={<Search />} />
+          <Route path="/product/details/:purl" element={<ProductDetails />} />
         </Routes>
         <Footer />
       </HashRouter>

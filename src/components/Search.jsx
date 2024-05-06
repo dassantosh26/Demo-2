@@ -1,12 +1,13 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import ReactPaginate from "react-paginate";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ShimmerUi from "../shimmer/ShimmerUi";
 import SidebarShimmer from "../shimmer/SidebarShimmer";
 const Home = () => {
+  const { purl } = useParams();
   const [brandList, setBrandList] = useState([]);
   const [categoryList, setCategoryList] = useState([]);
   const [productList, setProductList] = useState([]);
@@ -15,9 +16,28 @@ const Home = () => {
   const [bId, setBid] = useState("");
   const [cId, setcid] = useState("");
   const [query, setQuery] = useState("");
-  const [suggestedProduct, setSuggestedProduct] = useState([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [suggestedProduct, setSuggestedProduct] = useState([]); //Forstoring  suggestion product
+  const [showSuggestions, setShowSuggestions] = useState(false); //For dispaying dropdown menu when user search
   const navigate = useNavigate();
+
+  const searchedProduct = async () => {
+    // alert(purl);
+    let url = "https://cybotrix.com/webapi/product/searchproductbyurl";
+    let searchData = { url: purl, type: "" };
+    let postData = {
+      headers: { "Content-type": "application/json" },
+      method: "POST",
+      body: JSON.stringify(searchData),
+    };
+    await fetch(url, postData)
+      .then((response) => response.json())
+      .then((resultArr) => {
+        console.log(resultArr);
+        // setShowSuggestions(resultArr);
+        setProductList(resultArr);
+      })
+      .catch((err) => console.log("Error in getting product", err));
+  };
   const getBrand = async () => {
     setIsLoading(true);
     try {
@@ -57,6 +77,7 @@ const Home = () => {
       console.error("Error:", error);
     }
   };
+
   const addCart = async (id, price) => {
     try {
       const url = "https://cybotrix.com/webapi/cart/addtocart";
@@ -84,7 +105,7 @@ const Home = () => {
       });
     }
   };
-  const searchproductByCategory = async (categoryid = "", brandid = "") => {
+  const searchproductByCategory = async () => {
     setIsLoading(true);
     const url = "https://cybotrix.com/webapi/product/searchproduct";
     const newcat = { categoryid: cId, brandid: bId }; // pass productid
@@ -114,11 +135,24 @@ const Home = () => {
       await fetch(url, postData)
         .then((response) => response.json())
         .then((suggestedData) => {
-          // console.log(suggestedData);
+          console.log(suggestedData);
           setSuggestedProduct(suggestedData);
           setShowSuggestions(true);
         });
     } else {
+      setShowSuggestions(false);
+    }
+  };
+  const suggestionValue = (value) => {
+    // console.log(value);
+    if (value.url != "") {
+      if (value.type == "C" || value.type == "B") {
+        navigate("/search/" + value.url);
+        searchedProduct();
+        getproductList();
+      } else {
+        navigate("/product/details/" + value.url);
+      }
       setShowSuggestions(false);
     }
   };
@@ -135,38 +169,27 @@ const Home = () => {
     setBid(brandid);
   };
 
-  const suggestionValue = (value) => {
-    // console.log(value);
-    if (value.url != "") {
-      if (value.type == "C" || value.type == "B") {
-        navigate("/search/" + value.url);
-      } else {
-        navigate("/product/details/" + value.url);
-      }
-    }
-  };
-
   useEffect(() => {
     getBrand();
     getCategoryList();
-    getproductList();
+    // getproductList();
     // searchedProduct();
   }, []);
   useEffect(() => {
     searchproductByCategory();
-    // console.log(cId, bId);
   }, [cId, bId]);
 
   useEffect(() => {
     searchSuggestion();
+    searchedProduct();
   }, [query]);
 
   const filtereredProduct = productList.filter(
     (product) =>
       product.productname.toLowerCase().includes(query.toLowerCase()) ||
-      product.details.toLowerCase().includes(query.toLowerCase()) ||
       product.price.toLowerCase().includes(query.toLowerCase())
   );
+  // console.log(filtereredProduct);
   //pagination
   const PER_PAGE = 12;
   function handlePageClick({ selected: selectedPage }) {
