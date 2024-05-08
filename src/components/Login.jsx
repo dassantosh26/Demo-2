@@ -1,3 +1,5 @@
+/** @format */
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -20,10 +22,14 @@ const Login = () => {
         const response = await fetch(url, postData);
         const userinfo = await response.json();
         console.log(userinfo);
-        localStorage.setItem("tokenno", userinfo.tokenno);
-        localStorage.setItem("name", userinfo.name);
-        localStorage.setItem("status", userinfo.status);
-        navigate("/cart");
+        if (userinfo.type === "USER") {
+          localStorage.setItem("tokenno", userinfo.tokenno);
+          localStorage.setItem("name", userinfo.name);
+          localStorage.setItem("status", userinfo.status);
+          navigate("/cart");
+        } else {
+          alert("Invalid User");
+        }
       } catch (error) {
         console.error("Error:", error);
       }

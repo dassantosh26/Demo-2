@@ -140,6 +140,7 @@ const Home = () => {
     if (value.url != "") {
       if (value.type == "C" || value.type == "B") {
         navigate("/search/" + value.url);
+        window.location.reload();
       } else {
         navigate("/product/details/" + value.url);
       }
@@ -271,11 +272,13 @@ const Home = () => {
                   return (
                     <div className="col-lg-3" key={index}>
                       <div className="card mb-4">
-                        <img
-                          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0lOAbGwrTH9HV2C9md0fn379g-KY4avQ_Jubs6IkBQg&s"
-                          className="card-img-top"
-                          alt="..."
-                        />
+                        <Link to={"/product/details/" + product.url}>
+                          <img
+                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0lOAbGwrTH9HV2C9md0fn379g-KY4avQ_Jubs6IkBQg&s"
+                            className="card-img-top"
+                            alt="..."
+                          />
+                        </Link>
                         <div className="card-body">
                           <h5 className="card-title">{product.productname}</h5>
                           <p className="card-text text-truncate">

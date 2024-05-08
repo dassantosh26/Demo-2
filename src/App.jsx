@@ -7,6 +7,7 @@ import Footer from "./components/Footer";
 import Search from "./components/Search";
 import ProductDetails from "./components/ProductDetails";
 import OrderList from "./components/OrderList";
+import VendorRegister from "./components/VendorRegister";
 
 function App() {
   if (localStorage.getItem("orderid") == null) {
@@ -22,6 +23,7 @@ function App() {
           <Route path="/cart" element={<Cart />} />
           <Route path="/orderlist" element={<OrderList />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/vendorRegister" element={<VendorRegister />} />
           <Route path="/search/:purl" element={<Search />} />
           <Route path="/product/details/:purl" element={<ProductDetails />} />
         </Routes>

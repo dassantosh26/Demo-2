@@ -66,7 +66,7 @@ const Footer = () => {
           </div>
           <div className="col-lg-3">
             <h6>Social</h6>
-            <div>
+            <div className="mb-3">
               <Link className="footer1">
                 <span>
                   <i className="fa-brands fa-facebook fa-2x mx-2"></i>
@@ -82,6 +82,9 @@ const Footer = () => {
                   <i className="fa-brands fa-twitter fa-2x"></i>
                 </span>
               </Link>
+            </div>
+            <div>
+              <Link className="footer1 fw-bolder fs-5" to={"/vendorRegister"}>Vendor Registration</Link>
             </div>
           </div>
         </div>
