@@ -28,7 +28,7 @@ const Login = () => {
           localStorage.setItem("status", userinfo.status);
           navigate("/cart");
         } else {
-          alert("Invalid User");
+          alert("Invalid User Type");
         }
       } catch (error) {
         console.error("Error:", error);
